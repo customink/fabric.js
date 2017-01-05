@@ -14085,13 +14085,21 @@ fabric.util.object.extend(fabric.Object.prototype, /** @lends fabric.Object.prot
       /** @ignore */
       replacement.width = canvasEl.width;
       replacement.height = canvasEl.height;
-      replacement.onload = function() {
+      if (fabric.isLikelyNode) {
+        replacement.src = canvasEl.toDataURL(fabric.Image.pngCompression);
         _this._element = replacement;
         !forResizing && (_this._filteredEl = replacement);
         callback && callback(_this);
-        replacement.onload = canvasEl = null;
-      };
-      replacement.src = canvasEl.toDataURL(fabric.Image.pngCompression);
+      }
+      else {
+        replacement.onload = function() {
+          _this._element = replacement;
+          !forResizing && (_this._filteredEl = replacement);
+          callback && callback(_this);
+          replacement.onload = canvasEl = null;
+        };
+        replacement.src = canvasEl.toDataURL(fabric.Image.pngCompression);
+      }
       return canvasEl;
     },
 
