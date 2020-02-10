@@ -1203,7 +1203,7 @@
     });
   });
 
-  QUnit.test('loadFromJSON with image background and color', function(assert) {
+  QUnit.skip('loadFromJSON with image background and color', function(assert) {
     var done = assert.async();
     var serialized = JSON.parse(PATH_JSON);
     serialized.background = 'green';
