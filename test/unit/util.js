@@ -455,7 +455,7 @@
     }, 1000);
   });
 
-  QUnit.skip('fabric.util.loadImage', function(assert) {
+  QUnit.test('fabric.util.loadImage', function(assert) {
     var done = assert.async();
     assert.ok(typeof fabric.util.loadImage === 'function');
 
@@ -468,7 +468,6 @@
     fabric.util.loadImage(IMG_URL, function(obj) {
       if (obj) {
         var oImg = new fabric.Image(obj);
-        console.log('\n\n\n\n\n\n: ', obj, '\n\n\n', oImg.getSrc(), '\n\n\n\n\n\n');
         assert.ok(/fixtures\/very_large_image\.jpg$/.test(oImg.getSrc()), 'image should have correct src');
       }
       done();

@@ -20524,16 +20524,20 @@ fabric.util.object.extend(fabric.Object.prototype, /** @lends fabric.Object.prot
     getSrc: function(filtered) {
       var element = filtered ? this._element : this._originalElement;
       if (element) {
-        // if (element.toDataURL) {
-        //   return element.toDataURL();
-        // }
+        if (element.toDataURL) {
+          return element.toDataURL();
+        }
 
-        // if (this.srcFromAttribute) {
-        //   return element.getAttribute('src');
-        // }
-        // else {
-          return fabric.isLikelyNode ? element._src : element.src;
-        // }
+        if (this.srcFromAttribute) {
+          return element.getAttribute('src');
+        }
+        else {
+          if (element._src) {
+            return element._src;
+          }
+          // return fabric.isLikelyNode ? element._src : element.src;
+          return element.src;
+        }
       }
       else {
         return this.src || '';

@@ -204,7 +204,7 @@
     assert.equal(JSON.stringify(cObj.toJSON()), augmentedJSON);
   });
 
-  QUnit.skip('toObject', function(assert) {
+  QUnit.test('toObject', function(assert) {
     var emptyObjectRepr = {
       version:                  fabric.version,
       type:                     'object',
@@ -225,6 +225,7 @@
       scaleX:                   1,
       scaleY:                   1,
       angle:                    0,
+      clipTo:                   null,
       flipX:                    false,
       flipY:                    false,
       opacity:                  1,
@@ -236,6 +237,7 @@
       globalCompositeOperation: 'source-over',
       skewX:                      0,
       skewY:                      0,
+      transformMatrix:          null
     };
 
     var augmentedObjectRepr = {
@@ -248,6 +250,7 @@
       width:                    30,
       height:                   40,
       fill:                     'rgb(0,0,0)',
+      clipTo:                   null,
       stroke:                   null,
       strokeWidth:              1,
       strokeDashArray:          [5, 2],
@@ -268,11 +271,12 @@
       paintFirst:               'fill',
       globalCompositeOperation: 'source-over',
       skewX:                      0,
-      skewY:                      0
+      skewY:                      0,
+      transformMatrix:          null
     };
 
     var cObj = new fabric.Object();
-    assert.deepEqual(emptyObjectRepr, cObj.toObject());
+    assert.deepEqual(cObj.toObject(), emptyObjectRepr);
 
     cObj.set('left', 10)
       .set('top', 20)

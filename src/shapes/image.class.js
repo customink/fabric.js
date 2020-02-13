@@ -363,7 +363,10 @@
           return element.getAttribute('src');
         }
         else {
-          return fabric.isLikelyNode ? element._src : element.src;
+          if (element._src) {
+            return element._src;
+          }
+          return element.src;
         }
       }
       else {
