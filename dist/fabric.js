@@ -20532,6 +20532,10 @@ fabric.util.object.extend(fabric.Object.prototype, /** @lends fabric.Object.prot
           return element.getAttribute('src');
         }
         else {
+          if (element._src) {
+            return element._src;
+          }
+          // return fabric.isLikelyNode ? element._src : element.src;
           return element.src;
         }
       }

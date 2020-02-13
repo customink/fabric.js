@@ -363,6 +363,9 @@
           return element.getAttribute('src');
         }
         else {
+          if (element._src) {
+            return element._src;
+          }
           return element.src;
         }
       }

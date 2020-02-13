@@ -65,7 +65,7 @@
                   '"visible":true,"clipTo":null,"backgroundColor":"","fillRule":"nonzero","paintFirst":"fill","globalCompositeOperation":"source-over","transformMatrix":null,"skewX":0,"skewY":0,"rx":0,"ry":0}],"background":"#ff5555","overlay":"rgba(0,0,0,0.2)"}';
 
   function _createImageElement() {
-    return fabric.document.createElement('img');
+    return fabric.isLikelyNode ? new (require('canvas').Image)() : fabric.document.createElement('img');
   }
 
   function getAbsolutePath(path) {
@@ -78,9 +78,34 @@
     return src;
   }
 
-  var IMG_SRC = fabric.isLikelyNode ? ('file://' + __dirname + '/../fixtures/test_image.gif') : getAbsolutePath('../fixtures/test_image.gif');
+  function createCanvasForNode(width, height, options, nodeCanvasOptions) {
+    nodeCanvasOptions = nodeCanvasOptions || options;
 
-  var canvas = this.canvas = new fabric.Canvas(null, {enableRetinaScaling: false, width: 600, height: 600});
+    var canvasEl = fabric.document.createElement('canvas'),
+        nodeCanvas = new fabric.StaticCanvas(null, {renderOnAddRemove: false, enableRetinaScaling: false, width: 600, height: 600}),
+        nodeCacheCanvas = new fabric.StaticCanvas(null, {renderOnAddRemove: false, enableRetinaScaling: false, width: 600, height: 600});
+
+    // jsdom doesn't create style on canvas element, so here be temp. workaround
+    canvasEl.style = { };
+
+    canvasEl.width = nodeCanvas.width;
+    canvasEl.height = nodeCanvas.height;
+    options = options || { };
+    options.nodeCanvas = nodeCanvas;
+    options.nodeCacheCanvas = nodeCacheCanvas;
+    var FabricCanvas = fabric.Canvas || fabric.StaticCanvas,
+        fabricCanvas = new FabricCanvas(canvasEl, options);
+    fabricCanvas.nodeCanvas = nodeCanvas;
+    fabricCanvas.nodeCacheCanvas = nodeCacheCanvas;
+    fabricCanvas.contextContainer = nodeCanvas.getContext('2d');
+    fabricCanvas.contextCache = nodeCacheCanvas.getContext('2d');
+    fabricCanvas.Font = require('canvas').Font;
+    return fabricCanvas;
+  }
+
+  var IMG_SRC = fabric.isLikelyNode ? (__dirname + '/../fixtures/test_image.gif') : getAbsolutePath('../fixtures/test_image.gif');
+
+  var canvas = this.canvas = fabric.isLikelyNode ? createCanvasForNode() : new fabric.Canvas(null, {enableRetinaScaling: false, width: 600, height: 600});
   var upperCanvasEl = canvas.upperCanvasEl;
   var lowerCanvasEl = canvas.lowerCanvasEl;
 
@@ -2063,7 +2088,7 @@
     assert.equal(parentEl.firstChild, el, 'canvas should be appended at partentEl');
     assert.equal(parentEl.childNodes.length, 1, 'parentEl has 1 child only');
 
-    var canvas = new fabric.Canvas(el, {enableRetinaScaling: false, renderOnAddRemove: false });
+    var canvas = fabric.isLikelyNode ? createCanvasForNode() : new fabric.Canvas(el, {enableRetinaScaling: false, renderOnAddRemove: false });
     wrapperEl = canvas.wrapperEl;
     lowerCanvasEl = canvas.lowerCanvasEl;
     upperCanvasEl = canvas.upperCanvasEl;
